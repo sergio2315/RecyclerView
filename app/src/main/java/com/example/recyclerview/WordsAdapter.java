@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +16,11 @@ import java.util.List;
 public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.wordViewHolder> {
     //1. añadir lista de string que contendra los datos
     private List<String> mWordList;
+    private PasarElemento pasarElemento;
     //8. creamos un constructor para pasar el listado de datos al instanciar el adapter
-    public WordsAdapter(List<String>mWordList){
+    public WordsAdapter(List<String>mWordList, PasarElemento pasarElemento){
         this.mWordList = mWordList;
+        this.pasarElemento = pasarElemento;
     }
 
     @NonNull
@@ -36,17 +39,31 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.wordViewHold
 
     @Override
     public int getItemCount() {
+        //5. indicar que retorna el tamaño del listado
         return mWordList.size();
     }
 
     //2. crear clase interna llamada xxx ViewHolder
-    public class wordViewHolder extends RecyclerView.ViewHolder{
+    public class wordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView textView;
         public wordViewHolder(@NonNull WorkItemListBinding binding){
             super(binding.getRoot());
             textView = binding.textView;
+            itemView.setOnClickListener(this);
+        }
+        public  void onClick(View v){
+            int position = getLayoutPosition();
+            String element = mWordList.get(position);
+            //Toast.makeText(v.getContext(),"CLICK "+element,Toast.LENGTH_LONG).show();
+            mWordList.set(position,element+" CLICK");
+            notifyDataSetChanged();
+            pasarElemento.passElement(element);
         }
     }
+    //interface que recibira la palabra
+interface PasarElemento{
+   void passElement(String elemento);
 
+}
 
 }
